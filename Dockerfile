@@ -2,10 +2,23 @@ FROM gitpod/workspace-full
 
 USER root
 
-RUN curl -sSL https://get.haskellstack.org/ | sh
+RUN curl https://nixos.org/nix/install | sh
 
 USER gitpod
 
-RUN git clone https://github.com/haskell/haskell-ide-engine --recursive && \
-    cd haskell-ide-engine && \
-    stack install
+# trust/use these 3rd party caches
+RUN nix-env -iA cachix -f https://github.com/NixOS/nixpkgs/tarball/889c72032f8595fcd7542c6032c208f6b8033db6
+RUN cachix -v use hie-nix
+
+# haskell ide engine
+RUN nix-env -iA hie86 -f https://github.com/domenkozar/hie-nix/tarball/master
+
+# haskell
+RUN nix-env -iA \
+   nixpkgs.haskell.compiler.ghc863 \
+   nixpkgs.haskellPackages.ghcid \
+   nixpkgs.haskellPackages.hasktags \
+   nixpkgs.haskellPackages.hlint \
+   nixpkgs.haskellPackages.hoogle \
+   nixpkgs.haskellPackages.pointfree \
+   nixpkgs.haskellPackages.pointful
