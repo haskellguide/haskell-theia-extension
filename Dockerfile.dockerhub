@@ -1,11 +1,9 @@
 FROM gitpod/workspace-full
 
-USER root
-ENV USER root
+USER gitpod
+ENV USER gitpod
 
 RUN curl https://nixos.org/nix/install | sh
-
-USER gitpod
 
 # trust/use these 3rd party caches
 RUN nix-env -iA cachix -f https://github.com/NixOS/nixpkgs/tarball/889c72032f8595fcd7542c6032c208f6b8033db6
